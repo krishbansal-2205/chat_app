@@ -34,9 +34,12 @@ export const signup = async (req, res) => {
       if (newUser) {
          generateToken(newUser._id, res);
          await newUser.save();
-         return res
-            .status(201)
-            .json({ user: newUser, message: 'User created successfully' });
+         return res.status(201).json({
+            _id: newUser._id,
+            fullname: newUser.fullname,
+            email: newUser.email,
+            avatar: newUser.avatar,
+         });
       } else {
          return res.status(500).json({ message: 'Something went wrong' });
       }
@@ -68,9 +71,12 @@ export const login = async (req, res) => {
 
       generateToken(user_db._id, res);
 
-      return res
-         .status(200)
-         .json({ user: user_db, message: 'Login successful' });
+      return res.status(200).json({
+         _id: user_db._id,
+         fullname: user_db.fullname,
+         email: user_db.email,
+         avatar: user_db.avatar,
+      });
    } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Error in login route' });
@@ -101,6 +107,8 @@ export const updateProfile = async (req, res) => {
          { avatar: uploadResponse.secure_url },
          { new: true }
       );
+
+      return res.status(200).json(updatedUser);
    } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Error in updateProfile route' });

@@ -108,7 +108,12 @@ export const updateProfile = async (req, res) => {
          { new: true }
       );
 
-      return res.status(200).json(updatedUser);
+      return res.status(200).json({
+         _id: updatedUser._id,
+         fullname: updatedUser.fullname,
+         email: updatedUser.email,
+         avatar: updatedUser.avatar,
+      });
    } catch (error) {
       console.log(error);
       return res.status(500).json({ message: 'Error in updateProfile route' });

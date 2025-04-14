@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useChatStore } from '../store/useChatStore.js';
 import ChatHeader from './ChatHeader.jsx';
 import MessageInput from './MessageInput.jsx';
@@ -7,13 +7,35 @@ import { useAuthStore } from '../store/useAuthStore.js';
 import { formatMessageTime } from '../lib/utils.js';
 
 const ChatContainer = () => {
-   const { messages, selectedUser, isMessagesLoading, getMessages } =
-      useChatStore();
+   const {
+      messages,
+      selectedUser,
+      isMessagesLoading,
+      getMessages,
+      subscribeToMessages,
+      unsubscribeFromMessages,
+   } = useChatStore();
    const { authUser } = useAuthStore();
+   const messageEndRef = useRef(null);
 
    useEffect(() => {
       getMessages(selectedUser._id);
-   }, [selectedUser._id, getMessages]);
+      subscribeToMessages();
+
+      return () => {
+         unsubscribeFromMessages();
+      };
+   }, [
+      selectedUser._id,
+      getMessages,
+      subscribeToMessages,
+      unsubscribeFromMessages,
+   ]);
+
+   useEffect(() => {
+      if (!messageEndRef.current || !messages) return;
+      messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+   }, [messages]);
 
    if (isMessagesLoading) {
       return (
@@ -37,6 +59,7 @@ const ChatContainer = () => {
                         ? 'chat-end'
                         : 'chat-start'
                   }`}
+                  ref={messageEndRef}
                >
                   <div className='chat-image avatar'>
                      <div className='size-10 rounded-full border'>
@@ -55,7 +78,7 @@ const ChatContainer = () => {
                         {formatMessageTime(message.createdAt)}
                      </time>
                   </div>
-                  <div className='chat-bubble flex flex-col'>
+                  <div className='chat-bubble flex flex-col rounded-lg'>
                      {message.image && (
                         <img
                            src={message.image}

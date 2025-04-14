@@ -6,8 +6,8 @@
       "target": "esnext",
       "allowSyntheticDefaultImports": true,
       "module": "esnext",
-      "baseUrl": "."
+      "baseUrl": ".",
     },
-    "include": ["src"]
+    "include": ["**/*.js", "**/*.jsx", "vite-env.d.ts"]
   }
   

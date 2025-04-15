@@ -5,6 +5,7 @@ import cors from 'cors';
 
 import authRoutes from './routes/auth.route.js';
 import messageRoutes from './routes/message.route.js';
+import healthCheckRoutes from './routes/healthcheck.route.js';
 import connectDB from './lib/db.js';
 import { app, server } from './lib/socket.js';
 
@@ -22,6 +23,7 @@ app.use(
 
 app.use('/api/auth', authRoutes);
 app.use('/api/messages', messageRoutes);
+app.use('/healthcheck', healthCheckRoutes);
 
 server.listen(port, () => {
    console.log('server started', port);
